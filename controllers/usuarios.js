@@ -7,16 +7,12 @@ const getUsuarios = async (req, res = response) => {
 
     const desde = Number(req.query.desde) || 0; // si no hay parametro, uso 0
 
-    // const usuarios = await Usuario.find()  // busca los usuarios, para filtrar {}, 'campo campo2'
-    //                               .skip(desde)  // no ejecuta todo lo anterior al parametro
-    //                               .limit(5); // muestro solo 5.
-    // const totalUsuarios = await Usuario.count();
-
     const [usuarios, total] = await Promise.all([
             Usuario
-                .find({activo: true})
+                .find()
                 .skip(desde)
-                .limit(5),
+                .limit(5)
+                .sort({nombre: 1}),
 
             Usuario.countDocuments()
     ]); 

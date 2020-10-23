@@ -21,6 +21,7 @@ app.use('/api/usuarios', require('./routes/usuarios'));
 app.use('/api/login', require('./routes/auth'));
 app.use('/api/obrassociales', require('./routes/obras-sociales'));
 app.use('/api/pacientes', require('./routes/pacientes'));
+app.use('/api/busquedas', require('./routes/busquedas') );
 
 // levantar servidor
 app.listen(process.env.PORT, () => {
