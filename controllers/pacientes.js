@@ -8,8 +8,8 @@ const crearPaciente = async(req, res = response) => {
 
     try {
         
-        const existeMail = await Paciente.findOne({dni});
-        if (existeMail) {
+        const existeDNI = await Paciente.findOne({dni});
+        if (existeDNI) {
             return res.status(400).json({
                 ok: false,
                 msg: 'El Paciente ya está registrado'
@@ -50,6 +50,7 @@ const getPacientes = async(req, res = response) => {
             .find()
             .populate('obraSocial', 'nombre')
             .skip(desde)
+            .sort({apellido: 1})
             .limit(5),
         Paciente.countDocuments()
     ])
@@ -59,6 +60,29 @@ const getPacientes = async(req, res = response) => {
         pacientes,
         total,
     })
+}
+
+const getPacientePorId = async(req, res = response) => {
+
+    const id = req.params.id;
+
+    try {
+
+        const paciente = await Paciente.findById(id)
+                                       .populate('obraSocial', 'nombre')
+
+        res.json({
+            ok: true,
+            paciente
+        })
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Error inesperado, revisar log',
+        }) 
+    }
 }
 
 const actualizarPaciente = async(req, res = response) => {
@@ -146,6 +170,7 @@ module.exports = {
     crearPaciente,
     getPacientes,
     actualizarPaciente,
-    activarInactivarPaciente
+    activarInactivarPaciente,
+    getPacientePorId
 
 }

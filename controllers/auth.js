@@ -1,8 +1,10 @@
 const { response } = require('express'); // importo ayudas para autocompletado
-const Usuario = require('../models/usuario');
 const bcryptjs = require('bcryptjs');
+
+const Usuario = require('../models/usuario');
 const { generarJWT } = require('../helpers/jwt');
 const { googleVerify } = require('../helpers/google-verify');
+const { getMenuFrontEnd } = require('../helpers/menu-frontend');
 
 const login = async (req, res = response) => {
 
@@ -24,9 +26,18 @@ const login = async (req, res = response) => {
         const validPassword = bcryptjs.compareSync(password, usuarioDB.password); // compara hasheando la pass enviada con la de la BD
 
         if (!validPassword) {
+
             return res.status(404).json({
                 ok: false,
                 msg: 'El usuario y/o la contraseña no son validas'
+            });
+            
+        }
+
+        if (!usuarioDB.activo) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'El usuario se encuentra inactivo'
             });
 
         }
@@ -37,7 +48,8 @@ const login = async (req, res = response) => {
 
         res.status(200).json({
             ok: true,
-            token
+            token,
+            menu: getMenuFrontEnd( usuarioDB.rol)
         })
         
     } catch (error) {
@@ -88,7 +100,8 @@ const googleSignIn = async (req, res = response) => {
 
         res.json( {
             ok: true,
-            token
+            token,
+            menu: getMenuFrontEnd( usuario.rol)
         });
         
     } catch (error) {
@@ -112,7 +125,8 @@ const renewToken = async (req, res = response) => {
         res.json( {
             ok: true,
             token,
-	    usuario
+            usuario,
+            menu: getMenuFrontEnd( usuario.rol)
             
         });
 

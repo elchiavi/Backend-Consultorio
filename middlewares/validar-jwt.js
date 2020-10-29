@@ -1,5 +1,6 @@
 const { response } = require('express');
 const jwt = require('jsonwebtoken');
+const Usuario = require('../models/usuario');
 
 const validarJWT = (req, res = response, next) => {
 
@@ -37,6 +38,73 @@ const validarJWT = (req, res = response, next) => {
 
 }
 
+const validarAdminRol = async (req, res, next) => {
+
+    const uid = req.uid;
+
+    try {
+        const usuarioDB = await Usuario.findById(uid);
+        if (!usuarioDB) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Usuario no existe'
+            })
+        }
+        
+        if (usuarioDB.rol !== 'ADMIN_ROLE') {
+            return res.status(403).json({
+                ok: false,
+                msg: 'Usuario no tiene permisos para realizar la acción'
+            })
+        }
+        next();
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administrador'
+        }) 
+    };
+
+}
+
+const validarAdminRol_o_MismoUsuario = async (req, res, next) => {
+
+    const uid = req.uid;
+    const idModif = req.params.id;
+
+    try {
+        const usuarioDB = await Usuario.findById(uid);
+        if (!usuarioDB) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Usuario no existe'
+            })
+        }
+        
+        if (usuarioDB.rol === 'ADMIN_ROLE' || uid === idModif) {
+            next();
+
+        } else {
+            return res.status(403).json({
+                ok: false,
+                msg: 'Usuario no tiene permisos para realizar la acción'
+            })          
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administrador'
+        }) 
+    };
+
+}
+
 module.exports = {
-    validarJWT
+    validarJWT,
+    validarAdminRol,
+    validarAdminRol_o_MismoUsuario
 }

@@ -35,7 +35,7 @@ const getDocumentosColeccion = async(req, res = response ) => {
 
     switch ( tabla ) {
         case 'pacientes':
-            data = await Paciente.find({ nombre: regex })
+            data = await Paciente.find({ apellido: regex })
                                 .populate('usuario', 'nombre img')
                                 .populate('obraSocial', 'nombre img');
         break;

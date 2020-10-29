@@ -4,12 +4,23 @@ const ObraSocial = require('../models/obra-social');
 
 const getObrasSociales = async  (req, res = response) => {
 
-    const obrasSociales = await ObraSocial.find()
-                                          .populate('usuario', 'nombre');
+    const desde = Number(req.query.desde) || 0; // si no hay parametro, uso 0
 
+    const [obrasSociales, total] = await Promise.all([
+        ObraSocial
+            .find()
+            .skip(desde)
+            .limit(5)
+            .sort({nombre: 1})
+            .populate('usuario', 'nombre'),
+
+            ObraSocial.countDocuments()
+    ]);
+    
     res.json({
         Ok: true,
-        obrasSociales
+        obrasSociales,
+        total
     })
 }
 
