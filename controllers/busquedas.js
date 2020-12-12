@@ -64,7 +64,52 @@ const getDocumentosColeccion = async(req, res = response ) => {
 
 }
 
+const getObrasSocialesActivas = async  (req, res = response) => {
+
+    const uid = req.uid;
+    
+    const [obrasSociales, total] = await Promise.all([
+        ObraSocial
+            .find({'usuario': uid})
+            .find({'activo': true})
+            .sort({nombre: 1})
+            .populate('usuario', 'nombre'),
+
+            ObraSocial.countDocuments()
+    ]);
+    
+    res.json({
+        Ok: true,
+        obrasSociales,
+        total
+    })
+}
+
+const getPacientesActivos = async(req, res = response) => {
+
+    const desde = Number(req.query.desde) || 0;
+    const uid = req.uid;
+
+    const [pacientes, total] = await Promise.all([
+        Paciente
+            .find({'usuario': uid})
+            .find({'activo': true})
+            .sort({apellido: 1})
+            .populate('obraSocial', 'nombre'),
+            
+        Paciente.countDocuments()
+    ])
+
+    res.json({
+        Ok: true,
+        pacientes,
+        total,
+    })
+}
+
 module.exports = {
     getTodo,
-    getDocumentosColeccion
+    getDocumentosColeccion,
+    getObrasSocialesActivas,
+    getPacientesActivos
 }

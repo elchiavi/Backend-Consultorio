@@ -5,16 +5,17 @@ const ObraSocial = require('../models/obra-social');
 const getObrasSociales = async  (req, res = response) => {
 
     const desde = Number(req.query.desde) || 0; // si no hay parametro, uso 0
+    const uid = req.uid;
 
     const [obrasSociales, total] = await Promise.all([
         ObraSocial
-            .find()
+            .find({'usuario': uid})
             .skip(desde)
             .limit(5)
             .sort({nombre: 1})
             .populate('usuario', 'nombre'),
 
-            ObraSocial.countDocuments()
+        ObraSocial.find({'usuario': uid}).countDocuments()
     ]);
     
     res.json({

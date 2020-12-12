@@ -5,11 +5,12 @@ const Paciente  = require('../models/paciente');
 const crearPaciente = async(req, res = response) => {
 
     const { dni } = req.body
+    const usuario = req.uid;
 
     try {
         
-        const existeDNI = await Paciente.findOne({dni});
-        if (existeDNI) {
+        const existeDNI = await Paciente.findOne({dni},{usuario});
+        if ((existeDNI)) {
             return res.status(400).json({
                 ok: false,
                 msg: 'El Paciente ya está registrado'
@@ -44,15 +45,17 @@ const crearPaciente = async(req, res = response) => {
 const getPacientes = async(req, res = response) => {
 
     const desde = Number(req.query.desde) || 0;
+    const uid = req.uid;
 
     const [pacientes, total] = await Promise.all([
         Paciente
-            .find()
+            .find({'usuario': uid})
             .populate('obraSocial', 'nombre')
             .skip(desde)
             .sort({apellido: 1})
+            .sort({nombre: 1})
             .limit(5),
-        Paciente.countDocuments()
+        Paciente.find({'usuario': uid}).countDocuments()
     ])
 
     res.json({
