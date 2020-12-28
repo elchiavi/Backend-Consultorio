@@ -3,7 +3,7 @@
 */
 const { Router} = require('express');
 const { check } = require('express-validator');
-const { crearTurno, getTurnos, eliminarTurno, actualizarTurno } = require('../controllers/turnos');
+const { crearTurno, getTurnos, eliminarTurno, actualizarTurno, confirmarTurno } = require('../controllers/turnos');
 const { validarCampos } = require ('../middlewares/validar-campos');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { isDate } = require('../helpers/isDate');
@@ -28,6 +28,8 @@ router.post('/',
     ],
     crearTurno
 )
+
+router.put('/confirmar/:id', validarJWT, confirmarTurno)
 
 router.put('/:id', 
     [   

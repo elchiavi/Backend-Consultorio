@@ -9,11 +9,13 @@ const getTodo = async(req, res = response ) => {
 
     const busqueda = req.params.busqueda;
     const regex = new RegExp( busqueda, 'i' );
+    const uid = req.uid;
 
     const [ usuarios, pacientes, obrasSociales ] = await Promise.all([
         Usuario.find({ nombre: regex }),
         Paciente.find({ nombre: regex }),
         ObraSocial.find({ nombre: regex }),
+        
     ]);
 
     res.json({
@@ -30,19 +32,24 @@ const getDocumentosColeccion = async(req, res = response ) => {
     const tabla    = req.params.tabla;
     const busqueda = req.params.busqueda;
     const regex    = new RegExp( busqueda, 'i' );
+    const uid = req.uid;
 
     let data = [];
 
     switch ( tabla ) {
         case 'pacientes':
             data = await Paciente.find({ apellido: regex })
-                                .populate('usuario', 'nombre img')
-                                .populate('obraSocial', 'nombre img');
+                                 .find({'usuario': uid})
+                                 .find({'activo': true})
+                                 .populate('usuario', 'nombre img')
+                                 .populate('obraSocial', 'nombre img');
         break;
 
         case 'obrasSociales':
             data = await ObraSocial.find({ nombre: regex })
-                                    .populate('usuario', 'nombre img');
+                                   .find({'usuario': uid})
+                                   .find({'activo': true})
+                                   .populate('usuario', 'nombre img');
         break;
 
         case 'usuarios':

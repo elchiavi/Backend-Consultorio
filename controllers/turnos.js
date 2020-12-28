@@ -1,5 +1,6 @@
 const { response } = require('express'); // importo ayudas para autocompletado
 const Turno = require('../models/turno');
+const nodemailer = require("nodemailer");
 
 const getTurnos = async (req, res = response) => {
 
@@ -23,8 +24,32 @@ const crearTurno = async (req, res = response) => {
         turno.usuario = req.uid;
         turno.start = turno.start.setHours(turno.start.getHours() - 3);
         turno.end = turno.end.setHours(turno.end.getHours() - 3);
+        turno.asistio = false;
         
         const turnoGuardado = await turno.save();
+
+        // let transporter = nodemailer.createTransport({
+        //     service: 'gmail',
+        //     auth: {
+        //       user: 'elchiavi@gmail.com',
+        //       pass: '******'
+        //     },
+        // });
+
+        // let mailOptions = {
+        //     from: 'David Fernandez',
+        //     to: 'elchiavi@gmail.com',
+        //     subject: 'Probando envío de mail',
+        //     text: 'Tenes un turno!!'
+        // };
+
+        // transporter.sendMail(mailOptions, function (error, info) {
+        //     if (error) {
+        //       console.log("ERROR!!!!!!", error);
+        //     } else {
+        //       console.log('Email sent: ' + info.response);
+        //     }
+        // });
 
         res.json({
             ok: true,
@@ -64,6 +89,42 @@ const eliminarTurno = async (req, res = response) => {
         
     } catch (error) {
         console.log(error)
+        res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administrador'
+        });        
+    }
+
+}
+
+const confirmarTurno = async (req, res = response) => {
+
+    const turnoId = req.params.id;
+
+    try {
+
+        const turno = await Turno.findById( turnoId );
+
+        if ( !turno ) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'El Turno no existe por ese id'
+            });
+        }
+
+        const {asistio, ...camposTurno} = req.body;
+        camposTurno.asistio = true;
+
+        const turnoConfirmado = await Turno.findByIdAndUpdate(turnoId, camposTurno, {new: true});
+
+        res.json({
+            ok: true,
+            ObraSocial: turnoConfirmado
+        })
+
+        
+    } catch (error) {
+        console.log(error);
         res.status(500).json({
             ok: false,
             msg: 'Hable con el administrador'
@@ -125,5 +186,6 @@ module.exports = {
     crearTurno,
     getTurnos,
     actualizarTurno,
-    eliminarTurno
+    eliminarTurno,
+    confirmarTurno
 }

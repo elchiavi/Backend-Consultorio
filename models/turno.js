@@ -22,6 +22,11 @@ const TurnoSchema = Schema({
         required: true
     },
 
+    asistio: {
+        type: Boolean,
+        required: true
+    },
+
     paciente: {
         type: Schema.Types.ObjectId,
         ref: 'Paciente',
