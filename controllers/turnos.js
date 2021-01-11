@@ -6,7 +6,8 @@ const getTurnos = async (req, res = response) => {
 
     const uid = req.uid;
     const turnos = await Turno.find({'usuario': uid})
-                                .populate('paciente',['apellido' , 'nombre'] );
+                                .populate('paciente',['apellido' , 'nombre'] )
+                                .populate('prestacion',['nombre'] );
 
     res.json({
             ok: true,

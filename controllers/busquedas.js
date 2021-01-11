@@ -3,6 +3,7 @@ const { response } = require('express');
 const Usuario = require('../models/usuario');
 const Paciente = require('../models/paciente');
 const ObraSocial = require('../models/obra-social');
+const Prestacion = require('../models/prestacion')
 
 
 const getTodo = async(req, res = response ) => {
@@ -52,6 +53,13 @@ const getDocumentosColeccion = async(req, res = response ) => {
                                    .populate('usuario', 'nombre img');
         break;
 
+        case 'prestaciones':
+            data = await Prestacion.find({ nombre: regex })
+                                   .find({'usuario': uid})
+                                   .find({'activo': true})
+                                   .populate('usuario', 'nombre img');
+        break;
+
         case 'usuarios':
             data = await Usuario.find({ nombre: regex });
             
@@ -92,6 +100,27 @@ const getObrasSocialesActivas = async  (req, res = response) => {
     })
 }
 
+const getPrestacionesActivas = async  (req, res = response) => {
+
+    const uid = req.uid;
+    
+    const [prestaciones, total] = await Promise.all([
+        Prestacion
+            .find({'usuario': uid})
+            .find({'activo': true})
+            .sort({nombre: 1})
+            .populate('usuario', 'nombre'),
+
+            Prestacion.countDocuments()
+    ]);
+    
+    res.json({
+        Ok: true,
+        prestaciones,
+        total
+    })
+}
+
 const getPacientesActivos = async(req, res = response) => {
 
     const desde = Number(req.query.desde) || 0;
@@ -118,5 +147,6 @@ module.exports = {
     getTodo,
     getDocumentosColeccion,
     getObrasSocialesActivas,
-    getPacientesActivos
+    getPacientesActivos,
+    getPrestacionesActivas
 }

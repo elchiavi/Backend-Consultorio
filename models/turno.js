@@ -7,8 +7,9 @@ const TurnoSchema = Schema({
         required: true
     },
 
-    tipo: {
-        type: String,
+    prestacion: {
+        type: Schema.Types.ObjectId,
+        ref: 'Prestacion',
         required: true
     },
 

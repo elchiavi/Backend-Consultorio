@@ -23,6 +23,7 @@ app.use('/api/obrassociales', require('./routes/obras-sociales'));
 app.use('/api/pacientes', require('./routes/pacientes'));
 app.use('/api/busquedas', require('./routes/busquedas') );
 app.use('/api/turnos', require('./routes/turnos') );
+app.use('/api/prestaciones', require('./routes/prestaciones') );
 
 // levantar servidor
 app.listen(process.env.PORT, () => {

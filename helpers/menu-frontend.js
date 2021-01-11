@@ -6,6 +6,7 @@ const getMenuFrontEnd = (role = 'USER_ROLE') => {
             submenu: [
                 { titulo: 'Obras Sociales', url: 'obrassociales' },
                 { titulo: 'Pacientes', url: 'pacientes' },
+                { titulo: 'Prestaciones', url: 'prestaciones' },
                 //{ titulo: 'Usuarios', url: 'usuarios'}
     
             ]
