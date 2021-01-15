@@ -1,5 +1,7 @@
 const { response } = require('express'); // importo ayudas para autocompletado
 const Turno = require('../models/turno');
+const Usuario = require('../models/usuario');
+const Paciente = require('../models/paciente');
 const nodemailer = require("nodemailer");
 
 const getTurnos = async (req, res = response) => {
@@ -37,7 +39,8 @@ const crearTurno = async (req, res = response) => {
     const turno = new Turno( req.body );
 
     try {
-
+        const usuario = await Usuario.findById( req.uid);
+        const paciente = await Paciente.findById( turno.paciente);
         turno.usuario = req.uid;
         turno.start = turno.start.setHours(turno.start.getHours() - 3);
         turno.end = turno.end.setHours(turno.end.getHours() - 3);
@@ -48,16 +51,16 @@ const crearTurno = async (req, res = response) => {
         // let transporter = nodemailer.createTransport({
         //     service: 'gmail',
         //     auth: {
-        //       user: 'elchiavi@gmail.com',
-        //       pass: '******'
+        //       user: usuario.email,
+        //       pass: 'lobita932'
         //     },
         // });
 
         // let mailOptions = {
-        //     from: 'David Fernandez',
-        //     to: 'elchiavi@gmail.com',
-        //     subject: 'Probando envío de mail',
-        //     text: 'Tenes un turno!!'
+        //     from: usuario.email,
+        //     to: paciente.email,
+        //     subject: 'Turno Consultorio',
+        //     text: `Buenas tardes, se envía mail de confirmación de turno para el día ${req.body.start}`
         // };
 
         // transporter.sendMail(mailOptions, function (error, info) {
