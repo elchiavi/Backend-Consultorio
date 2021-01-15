@@ -12,7 +12,23 @@ const getTurnos = async (req, res = response) => {
     res.json({
             ok: true,
             turnos
-});
+    });
+
+}
+
+const turnosPorPaciente = async (req, res = response) => {
+    
+    const uid = req.uid;
+    const idPac = req.params.id;
+    const turnos = await Turno.find({'usuario': uid})
+                              .find({ paciente: idPac })
+                              .sort({start: -1})
+                              .populate('prestacion',['nombre'])
+
+    res.json({
+    ok: true,
+    turnos
+    });
 
 }
 
@@ -188,5 +204,6 @@ module.exports = {
     getTurnos,
     actualizarTurno,
     eliminarTurno,
-    confirmarTurno
+    confirmarTurno,
+    turnosPorPaciente
 }

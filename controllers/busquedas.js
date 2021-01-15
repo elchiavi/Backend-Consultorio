@@ -12,18 +12,21 @@ const getTodo = async(req, res = response ) => {
     const regex = new RegExp( busqueda, 'i' );
     const uid = req.uid;
 
-    const [ usuarios, pacientes, obrasSociales ] = await Promise.all([
-        Usuario.find({ nombre: regex }),
-        Paciente.find({ nombre: regex }),
-        ObraSocial.find({ nombre: regex }),
+    const [ pacientes, obrasSociales, prestaciones ] = await Promise.all([
+        Paciente.find({ apellido: regex })
+                .find({'usuario': uid}),
+        ObraSocial.find({ nombre: regex })
+                  .find({'usuario': uid}),
+        Prestacion.find({ nombre: regex })
+                  .find({'usuario': uid})
         
     ]);
 
     res.json({
         ok: true,
-        usuarios,
         pacientes,
-        obrasSociales
+        obrasSociales,
+        prestaciones
     })
 
 }
