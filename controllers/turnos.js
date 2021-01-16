@@ -42,8 +42,8 @@ const crearTurno = async (req, res = response) => {
         const usuario = await Usuario.findById( req.uid);
         const paciente = await Paciente.findById( turno.paciente);
         turno.usuario = req.uid;
-        turno.start = turno.start.setHours(turno.start.getHours() - 3);
-        turno.end = turno.end.setHours(turno.end.getHours() - 3);
+        // turno.start = turno.start.setHours(turno.start.getHours() - 3);
+        // turno.end = turno.end.setHours(turno.end.getHours() - 3);
         turno.asistio = false;
         
         const turnoGuardado = await turno.save();
