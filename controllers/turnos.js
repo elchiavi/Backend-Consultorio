@@ -2,7 +2,7 @@ const { response } = require('express'); // importo ayudas para autocompletado
 const Turno = require('../models/turno');
 const Usuario = require('../models/usuario');
 const Paciente = require('../models/paciente');
-const nodemailer = require("nodemailer");
+// const nodemailer = require("nodemailer");
 
 const getTurnos = async (req, res = response) => {
 
