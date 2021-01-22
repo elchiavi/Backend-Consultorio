@@ -178,8 +178,8 @@ const actualizarTurno = async( req, res = response ) => {
         start = new Date( nuevoTurno.start);
         end = new Date( nuevoTurno.end);
         
-        start = start.setHours(start.getHours() - 3);
-        end = end.setHours(end.getHours() - 3);
+        // start = start.setHours(start.getHours() - 3);
+        // end = end.setHours(end.getHours() - 3);
 
         nuevoTurno.start = start;
         nuevoTurno.end = end;
