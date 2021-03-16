@@ -44,7 +44,7 @@ const getDocumentosColeccion = async(req, res = response ) => {
         case 'pacientes':
             data = await Paciente.find({ apellido: regex })
                                  .find({'usuario': uid})
-                                 .find({'activo': true})
+                                 //.find({'activo': true})
                                  .populate('usuario', 'nombre img')
                                  .populate('obraSocial', 'nombre img');
         break;
@@ -52,14 +52,14 @@ const getDocumentosColeccion = async(req, res = response ) => {
         case 'obrasSociales':
             data = await ObraSocial.find({ nombre: regex })
                                    .find({'usuario': uid})
-                                   .find({'activo': true})
+                                   //.find({'activo': true})
                                    .populate('usuario', 'nombre img');
         break;
 
         case 'prestaciones':
             data = await Prestacion.find({ nombre: regex })
                                    .find({'usuario': uid})
-                                   .find({'activo': true})
+                                   //.find({'activo': true})
                                    .populate('usuario', 'nombre img');
         break;
 
