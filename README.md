@@ -1,6 +1,6 @@
 # Backend - Consultorio
 
-Recuerden ejecutar
+Ejecutar
 
 ```
 npm install
